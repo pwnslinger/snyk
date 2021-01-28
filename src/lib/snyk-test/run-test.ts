@@ -59,6 +59,7 @@ import { serializeCallGraphWithMetrics } from '../reachable-vulns';
 import { validateOptions } from '../options-validator';
 import { findAndLoadPolicy } from '../policy';
 import { assembleIacLocalPayloads, parseIacTestResult } from './run-iac-test';
+import { parseCodeTestResult, getCodeAnalysis } from './run-code-test';
 import {
   Payload,
   PayloadBody,
@@ -243,6 +244,9 @@ async function sendAndParseResults(
         options.severityThreshold,
       );
       results.push(result);
+    } else if (options.code) {
+      const res = await getCodeAnalysis(root);
+      console.log(res);
     } else {
       /** sendTestPayload() deletes the request.body from the payload once completed. */
       const payloadCopy = Object.assign({}, payload);
@@ -492,7 +496,7 @@ function assemblePayloads(
   options: Options & TestOptions,
 ): Promise<Payload[]> {
   let isLocal;
-  if (options.docker) {
+  if (options.docker || options.code) {
     isLocal = true;
   } else {
     // TODO: Refactor this check so we don't require files when tests are using mocks
@@ -517,7 +521,9 @@ async function assembleLocalPayloads(
 ): Promise<Payload[]> {
   // For --all-projects packageManager is yet undefined here. Use 'all'
   let analysisTypeText = 'all dependencies for ';
-  if (options.docker) {
+  if (options.code) {
+    analysisTypeText = 'code for';
+  } else if (options.docker) {
     analysisTypeText = 'docker dependencies for ';
   } else if (options.iac) {
     analysisTypeText = 'Infrastructure as code configurations for ';
@@ -537,6 +543,9 @@ async function assembleLocalPayloads(
     await spinner(spinnerLbl);
     if (options.iac) {
       return assembleIacLocalPayloads(root, options);
+    }
+    if (options.code) {
+      return [{} as Payload];
     }
     const deps = await getDepsFromPlugin(root, options);
     const failedResults = (deps as MultiProjectResultCustom).failedResults;
