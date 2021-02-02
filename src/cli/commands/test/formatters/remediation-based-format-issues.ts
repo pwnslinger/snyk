@@ -456,7 +456,7 @@ export function formatIssue(
     },
     critical: {
       colorFunc(text) {
-        return chalk.cyanBright(`🚨🚨🚨` + text + `🚨🚨🚨`);
+        return chalk.magentaBright(`🚨` + text + ` 🚨 `);
       },
     },
   };

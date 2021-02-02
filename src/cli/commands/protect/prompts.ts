@@ -61,6 +61,11 @@ function createSeverityBasedIssueHeading(msg: string, severity: SEVERITY) {
         return chalk.bold.red(text);
       },
     },
+    critical: {
+      colorFunc(text) {
+        return chalk.bold.magenta(text);
+      },
+    },
   };
   return severitiesColourMapping[severity].colorFunc(msg);
 }
