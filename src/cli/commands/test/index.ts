@@ -35,6 +35,9 @@ import {
   getIacDisplayedOutput,
   getIacDisplayErrorFileOutput,
 } from './iac-output';
+import {
+  getCodeDisplayedOutput,
+} from './code-output';
 import { getEcosystemForTest, testEcosystem } from '../../../lib/ecosystems';
 import { isMultiProjectScan } from '../../../lib/is-multi-project-scan';
 import {
@@ -480,6 +483,12 @@ function displayResult(
       meta,
       prefix,
     );
+  }
+
+  if (options.code) {
+    return getCodeDisplayedOutput((res as any), testedInfoText,
+      meta,
+      prefix);
   }
 
   // NOT OK => We found some vulns, let's format the vulns info

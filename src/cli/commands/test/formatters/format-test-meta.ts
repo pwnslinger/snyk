@@ -13,13 +13,19 @@ export function formatTestMeta(
   const packageManager = res.packageManager || options.packageManager;
   const targetFile = res.targetFile || res.displayTargetFile || options.file;
   const openSource = res.isPrivate ? 'no' : 'yes';
-  const meta = [
-    chalk.bold(rightPadWithSpaces('Organization: ', padToLength)) + res.org,
-  ];
+  const meta: string[] = [];
+  if (!options.code) {
+    meta.push(chalk.bold(rightPadWithSpaces('Organization: ', padToLength)) + res.org);
+  }
   if (options.iac) {
     meta.push(
       chalk.bold(rightPadWithSpaces('Type: ', padToLength)) +
         capitalizePackageManager(packageManager),
+    );
+  } else if (options.code) {
+    meta.push(
+      chalk.bold(rightPadWithSpaces('Test Type: ', padToLength)) +
+      'Static code analysis',
     );
   } else {
     meta.push(

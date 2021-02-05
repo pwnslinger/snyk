@@ -185,6 +185,9 @@ export interface TestResult extends LegacyVulnApiResult {
   foundProjectCount?: number;
 }
 
+export interface CodeTestResults {
+  tempPropertyChangeMe?: string;
+}
 interface UpgradePathItem {
   name: string;
   version: string;

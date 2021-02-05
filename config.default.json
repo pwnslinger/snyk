@@ -2,5 +2,8 @@
   "API": "https://snyk.io/api/v1",
   "devDeps": false,
   "PRUNE_DEPS_THRESHOLD": 40000,
-  "MAX_PATH_COUNT": 1500000
+  "MAX_PATH_COUNT": 1500000,
+  "_SNYKCODE_PROXY": "snyk2deepcode-token-exchange.dev.snyk.io",
+  "SNYKCODE_PROXY": "http://localhost:11981",
+  "CODE_LOGGING": false
 }
