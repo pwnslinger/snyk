@@ -1,6 +1,6 @@
 import * as sarif from 'sarif';
 import * as _ from 'lodash';
-import { upperFirst } from 'lodash';
+const upperFirst = require('lodash.upperfirst');
 import {
   TestResult,
   SEVERITY,
