@@ -16,7 +16,7 @@ import {
 } from '../../../../lib/package-managers';
 import * as config from '../../../../lib/config';
 const cloneDeep = require('lodash.clonedeep');
-const orderBy = require('lodash.orderBy');
+const orderBy = require('lodash.orderby');
 import * as analytics from '../../../../lib/analytics';
 import {
   formatIssuesWithRemediation,
