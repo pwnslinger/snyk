@@ -67,7 +67,7 @@
     "@snyk/cli-interface": "2.11.0",
     "@snyk/dep-graph": "1.23.1",
     "@snyk/gemfile": "1.2.0",
-    "@snyk/inquirer": "^6.2.2-patch",
+    "@snyk/inquirer": "^7.3.3-patch",
     "@snyk/snyk-cocoapods-plugin": "2.5.1",
     "abbrev": "^1.1.1",
     "ansi-escapes": "3.2.0",
