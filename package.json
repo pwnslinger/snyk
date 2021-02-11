@@ -107,7 +107,7 @@
     "snyk-go-plugin": "1.16.5",
     "snyk-gradle-plugin": "3.12.3",
     "snyk-module": "3.1.0",
-    "snyk-mvn-plugin": "2.25.1",
+    "snyk-mvn-plugin": "2.25.2",
     "snyk-nodejs-lockfile-parser": "1.30.2",
     "snyk-nuget-plugin": "1.20.0",
     "snyk-php-plugin": "1.9.2",
