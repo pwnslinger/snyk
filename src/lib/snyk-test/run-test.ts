@@ -75,6 +75,7 @@ import { getEcosystem } from '../ecosystems';
 import { Issue } from '../ecosystems/types';
 import { assembleEcosystemPayloads } from './assemble-payloads';
 import { NonExistingPackageError } from '../errors/non-existing-package-error';
+import { isFeatureFlagSupportedForOrg } from '../feature-flags';
 
 const debug = debugModule('snyk:run-test');
 
@@ -245,9 +246,6 @@ async function sendAndParseResults(
         options.severityThreshold,
       );
       results.push(result);
-    // } else if (options.code) {
-    //   const res = await getCodeAnalysis(root);
-    //   console.log(res);
     } else {
       /** sendTestPayload() deletes the request.body from the payload once completed. */
       const payloadCopy = Object.assign({}, payload);
@@ -308,7 +306,8 @@ export async function runTest(
   const spinnerLbl = 'Querying vulnerabilities database...';
   try {
     await validateOptions(options, options.packageManager);
-    if (options.code) {
+    const isCodeTestRun = await isCodeTest(options);
+    if (isCodeTestRun) {
       return await getCodeAnalysisAndParseResults(spinnerLbl, root, options);
     }
     const payloads = await assemblePayloads(root, options);
@@ -351,6 +350,33 @@ export async function runTest(
   } finally {
     spinner.clear<void>(spinnerLbl)();
   }
+}
+
+async function isCodeTest(options: Options & TestOptions) {
+  if (!options.code) {
+    return false;
+  }
+  const org = options.org || config.org;
+  const featureFlag = 'snykCode';
+  const snykCodeRes = await isFeatureFlagSupportedForOrg(
+    featureFlag,
+    org,
+  );
+
+  if (snykCodeRes.code === 401 || snykCodeRes.code === 403) {
+    throw AuthFailedError(
+      snykCodeRes.error,
+      snykCodeRes.code,
+    );
+  }
+
+  if (snykCodeRes.userMessage) {
+    throw new UnsupportedFeatureFlagError(
+      featureFlag,
+      snykCodeRes.userMessage,
+    );
+  }
+  return true;
 }
 
 async function parseRes(
@@ -525,9 +551,7 @@ async function assembleLocalPayloads(
 ): Promise<Payload[]> {
   // For --all-projects packageManager is yet undefined here. Use 'all'
   let analysisTypeText = 'all dependencies for ';
-  if (options.code) {
-    analysisTypeText = 'code for';
-  } else if (options.docker) {
+  if (options.docker) {
     analysisTypeText = 'docker dependencies for ';
   } else if (options.iac) {
     analysisTypeText = 'Infrastructure as code configurations for ';

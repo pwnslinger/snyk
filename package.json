@@ -59,7 +59,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@snyk/cli-interface": "2.11.0",
-    "@snyk/code-client": "^2.1.1",
+    "@snyk/code-client": "2.4.0",
     "@snyk/dep-graph": "1.21.0",
     "@snyk/gemfile": "1.2.0",
     "@snyk/snyk-cocoapods-plugin": "2.5.1",
@@ -73,6 +73,7 @@
     "diff": "^4.0.1",
     "graphlib": "^2.1.8",
     "inquirer": "^7.3.3",
+    "jsonschema": "^1.4.0",
     "lodash": "^4.17.20",
     "micromatch": "4.0.2",
     "needle": "2.5.0",

@@ -7,7 +7,7 @@ const { runTest } = require('./run-test');
 const chalk = require('chalk');
 const pm = require('../package-managers');
 const iacProjects = require('../iac/constants');
-const codeProjects = require('../code/constants');
+// const codeProjects = require('../code/constants');
 const {
   UnsupportedPackageManagerError,
   NotSupportedIacFileError,
@@ -60,13 +60,6 @@ async function executeTest(root, options) {
         ) {
           res.packageManager = res.result.projectType;
         }
-        // if (
-          //   options.code &&
-          //   res instanceof Sarif.Log &&
-          //   options.packageManager === codeProjects.CODE // consider removing since it's not a package manager
-          // ) {
-            //   res.packageManager = res.result.projectType;
-            // }
           }
           if (results.length === 1) {
             // Return only one result if only one found as this is the default usecase

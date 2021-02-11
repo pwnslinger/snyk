@@ -1,8 +1,15 @@
-import * as codeClient from '@snyk/code-client';
+// import * as jsonschema from 'jsonschema';
+import {
+  AnalysisSeverity,
+  analyzeFolders,
+} from '@snyk/code-client';
+import { Log } from 'sarif';
+import { SEVERITY } from './legacy';
 import { api } from '../../lib/api-token';
 import * as config from '../config';
 import spinner = require('../spinner');
-import * as analytics from '../analytics';
+import { Options } from '../types';
+// import * as sarifSchema from '../../lib/code/sarif-validator/sarif-schema-2.1.0.json';
 
 // codeClient.emitter.on('scanFilesProgress', (processed: number) => {
 //   console.log(`Indexed ${processed} files`);
@@ -20,33 +27,61 @@ import * as analytics from '../analytics';
 // codeClient.emitter.on('sendError', (error) => {
 //   console.log(error);
 // });
-
 export async function getCodeAnalysisAndParseResults(
-  spinnerLbl,
-  root,
-  options,
-) {
+  spinnerLbl: string,
+  root: string,
+  options: Options,
+): Promise<Log> {
   await spinner.clear<void>(spinnerLbl)();
   await spinner(spinnerLbl);
 
-  // analytics.add('Code type', true);
-  const res = await getCodeAnalysis(root);
-  // console.log('>>>>>>>>>>>>>>>>>>>>>>');
-  // console.log(JSON.stringify(res.sarifResults?.runs, null, 4));
-  // console.log('<<<<<<<<<<<<<<<<<<<<<<');
-
-  return await parseCodeTestResult(res, options);
+  return await getCodeAnalysis(root, options);
 }
-export async function getCodeAnalysis(root) {
+
+async function getCodeAnalysis(
+  root: string,
+  options: Options,
+): Promise<Log> {
   const baseURL = config.SNYKCODE_PROXY;
   const sessionToken = api();
-  return await codeClient.analyzeFolders(baseURL, sessionToken, false, 1, [
-    root,
-  ], undefined, undefined, undefined, true);
+
+  const includeLint = false;
+  const severityLevel = options.severityThreshold
+    ? severityToAnalysisSeverity(options.severityThreshold)
+    : AnalysisSeverity.info;
+  const paths: string[] = [root];
+  const symlinksEnabled = false;
+  const maxPayload = undefined;
+  const defaultFileIgnores = undefined;
+  const sarif = true;
+
+  const result =
+    await analyzeFolders(
+      baseURL,
+      sessionToken,
+      includeLint,
+      severityLevel,
+      paths,
+      symlinksEnabled,
+      maxPayload,
+      defaultFileIgnores,
+      sarif,
+    );
+
+  // add validation on sarifResults response
+  // const validationResult = jsonschema.validate(result.sarifResults, sarifSchema);
+
+  // validationResult.errors.length
+
+  // since sarif = true, we are certain that we have the sarifResults obj
+  return result.sarifResults!;
 }
 
-export function parseCodeTestResult(result, options) {
-
-  // we should filtering
-  return result.sarifResults;
+function severityToAnalysisSeverity(severity: SEVERITY): AnalysisSeverity {
+  const severityLevel = {
+    low: 1,
+    medium: 2,
+    high: 3,
+  };
+  return severityLevel[severity];
 }

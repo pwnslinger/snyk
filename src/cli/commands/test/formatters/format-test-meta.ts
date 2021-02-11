@@ -13,10 +13,11 @@ export function formatTestMeta(
   const packageManager = res.packageManager || options.packageManager;
   const targetFile = res.targetFile || res.displayTargetFile || options.file;
   const openSource = res.isPrivate ? 'no' : 'yes';
-  const meta: string[] = [];
-  if (!options.code) {
-    meta.push(chalk.bold(rightPadWithSpaces('Organization: ', padToLength)) + res.org);
-  }
+  const orgName = res.org || options.org;
+  const meta = [
+    chalk.bold(rightPadWithSpaces('Organization: ', padToLength)) + orgName,
+  ];
+
   if (options.iac) {
     meta.push(
       chalk.bold(rightPadWithSpaces('Type: ', padToLength)) +
