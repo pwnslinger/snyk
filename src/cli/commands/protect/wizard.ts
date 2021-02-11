@@ -10,7 +10,7 @@ import * as debugModule from 'debug';
 const debug = debugModule('snyk');
 
 import * as path from 'path';
-import * as inquirer from 'inquirer';
+import * as inquirer from '@snyk/inquirer';
 import * as fs from 'fs';
 import * as tryRequire from 'snyk-try-require';
 import chalk from 'chalk';

@@ -7,7 +7,7 @@ const dir = __dirname + '/fixtures/protect-via-snyk/';
 const fixture = require('./fixtures/protect-via-snyk/package.json');
 
 const wizard = proxyquire('../src/cli/commands/protect/wizard', {
-  inquirer: {
+  '@snyk/inquirer': {
     prompt: function(q, cb) {
       cb(q);
     },
